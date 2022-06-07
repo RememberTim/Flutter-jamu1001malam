@@ -296,10 +296,172 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     ),
-    //body pesanan
-    Center(
-      child: Text('Pesanan'),
-    ),
+    //body Berlangsung
+    SafeArea(
+        child: DefaultTabController(
+          length: 3,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 19.h),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 32.h,),
+                    Text(
+                      'Pemesanan',
+                      style: title,
+                    ),
+                    Text(
+                      'Tunggu pesanan jamu terbaikmu',
+                      style: subTitle,
+                    ),
+                    SizedBox(height: 33.h,),
+                  ],
+                ),
+              ),
+              Container(
+                height: 17.h,
+                width: 375.w,
+                decoration: BoxDecoration(
+                  color: Color(0xffF5F5F5)
+                ),
+              ),
+              TabBar(
+                indicatorColor: Colors.black,
+                tabs: [
+                  Tab(
+                    child: Text(
+                      'Berlangsung',
+                      style: subTitle,
+                    ),
+                  ),
+                  Tab(
+                    child: Text(
+                      'Selesai',
+                      style: subTitle,
+                    ),
+                  ),
+                  Tab(
+                    child: Text(
+                      'Batal',
+                      style: subTitle,
+                    ),
+                  )
+                ],
+              ),
+              Expanded(
+                child: TabBarView(
+                  children: [
+                    //Body Dewasa
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20.w,),
+                      child: Container(
+                        width: 375.w,
+                        height: 150.h,
+                        child: ListView.builder(
+                          scrollDirection: Axis.vertical,
+                          itemBuilder: ((context, index) {
+                            final Jamu jamu = listJamu[index];
+                            return InkWell(
+                              onTap: (){
+                                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                                return DetailScreen(jamu: jamu,);
+                                },));
+                              },
+                              child: Padding(
+                                padding: EdgeInsets.only(top: 17.h),
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      width: 71.w,
+                                      height: 67.h,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(5.w),
+                                        image: DecorationImage(
+                                          image: AssetImage(jamu.imageAssets!),
+                                          fit: BoxFit.cover,
+                                        ),  
+                                      ),
+                                    ),
+                                    SizedBox(width: 19.w,),
+                                    Expanded(
+                                      flex: 1,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            jamu.nama!,
+                                            style: sb14,
+                                          ),
+                                          SizedBox(height: 3.h,),
+                                          Text(
+                                            jamu.harga!,
+                                            style: hintText,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 1,
+                                      child: Row(
+                                        children: [
+                                          RatingBar.builder(
+                                            initialRating: jamu.rating!,
+                                            minRating: 1,
+                                            direction: Axis.horizontal,
+                                            allowHalfRating: true,
+                                            itemCount: 5,
+                                            itemPadding:
+                                                    EdgeInsets.symmetric(horizontal: 2),
+                                                itemBuilder: (context, _) => Icon(
+                                                  Icons.star,
+                                                  color: Colors.amber,
+                                                ),
+                                                onRatingUpdate: (rating) {
+                                                  print(rating);
+                                                },
+                                                itemSize: 15.w,
+                                          ),
+                                          Text(
+                                            '${jamu.rating!}'
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                    SizedBox(height: 17.h)
+                                  ],
+                                ),
+                              ),
+                            );
+                          }),
+                          itemCount: listJamu.length,
+                        ),
+                      ),
+                    ),
+                    //Body anak anak
+                    Center(
+                      child: Text(
+                        'Anak-anak',
+                        style: title,
+                      ),
+                    ),
+                    //Body semua usia
+                    Center(
+                      child: Text(
+                        'Semua Usia',
+                        style: title,
+                      ),
+                    )
+                  ],
+                ),
+              )
+            ],
+            
+          ),
+        ),
+      ),
     //body profile
     Center(
       child: Text('Profile'),

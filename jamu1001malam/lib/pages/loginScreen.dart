@@ -1,8 +1,34 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:jamu1001malam/networks/api.dart';
+import 'package:jamu1001malam/pages/homeScreen.dart';
 import 'package:jamu1001malam/widgets/themes.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+
+  bool _isLoading = false;
+  final _formKey = GlobalKey<FormState>();
+  var email, password;
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
+
+  _showMsg(msg) {
+    final snackBar = SnackBar(
+      content: Text(msg),
+    );
+    _scaffoldKey.currentState!.showSnackBar(snackBar);
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,6 +107,13 @@ class LoginScreen extends StatelessWidget {
                             hintText: "Masukkan Email Anda",
                             hintStyle: hintText
                           ),
+                          validator: (emailValue){
+                            if(emailValue!.isEmpty){
+                              return 'Please enter your email';
+                            }
+                            password = emailValue;
+                            return null;
+                          }
                         ),
                       ),
                     ),
@@ -114,6 +147,13 @@ class LoginScreen extends StatelessWidget {
                             hintText: "Masukkan Password Anda",
                             hintStyle: hintText
                           ),
+                          validator: (passwordValue){
+                            if(passwordValue!.isEmpty){
+                              return 'Please enter your password';
+                            }
+                            password = passwordValue;
+                            return null;
+                          }
                         ),
                       ),
                     ),
@@ -162,4 +202,30 @@ class LoginScreen extends StatelessWidget {
       ),
     );
   }
+
+  void _login() async{
+    setState(() {
+      _isLoading = true;
+    });
+
+    var data = {
+      'email' : email,
+      'password' : password
+    };
+
+    var res = await Network().auth(data, '/login');
+    var body = json.decode(res.body);
+    if(body['meta'][200]){
+        SharedPreferences localStorage = await SharedPreferences.getInstance();
+        localStorage.setString('token', json.encode(body['data']['access_token']));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen(),));
+    }else{
+      _showMsg(body['meta']['message']);
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
+  }
 }
+

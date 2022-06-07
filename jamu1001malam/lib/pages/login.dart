@@ -3,9 +3,34 @@ import 'package:jamu1001malam/pages/homeScreen.dart';
 import 'package:jamu1001malam/pages/registerScreen.dart';
 import 'package:jamu1001malam/widgets/themes.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:jamu1001malam/networks/api.dart';
+import 'dart:convert';
 
-class Login extends StatelessWidget {
-  const Login({ Key? key }) : super(key: key);
+class Login extends StatefulWidget {
+
+  @override
+  State<Login> createState() => _LoginState();
+}
+
+class _LoginState extends State<Login> {
+
+  bool _isLoading = false;
+  final _formKey = GlobalKey<FormState>();
+  var email, password;
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
+
+
+  // _showMsg(msg) {
+  //   final snackBar = SnackBar(
+  //     content: Text(msg),
+  //   );
+  //   _scaffoldKey.currentState!.showSnackBar(snackBar);
+  // }
+
+  TextEditingController _email = TextEditingController();
+  TextEditingController _password = TextEditingController();
+
 
   @override
   Widget build(BuildContext context) {
@@ -55,6 +80,7 @@ class Login extends StatelessWidget {
                       width: 334.w,
                       height: 42.h,
                       child: TextFormField(
+                        controller: _email,
                         keyboardType: TextInputType.emailAddress,
                         style: label,
                         decoration: InputDecoration(
@@ -71,6 +97,13 @@ class Login extends StatelessWidget {
                           hintText: "Masukkan Email Anda",
                           hintStyle: hintText
                         ),
+                        // validator: (emailValue){
+                        //     if(emailValue!.isEmpty){
+                        //       return 'Please enter your email';
+                        //     }
+                        //     password = emailValue;
+                        //     return null;
+                        //   }
                       ),
                     ),
                     SizedBox(height: 9.h,),
@@ -83,6 +116,7 @@ class Login extends StatelessWidget {
                       width: 334.w,
                       height: 42.h,
                       child: TextFormField(
+                        controller: _password,
                         obscureText: true,
                         style: label,
                         decoration: InputDecoration(
@@ -99,6 +133,13 @@ class Login extends StatelessWidget {
                           hintText: "Masukkan Password Anda",
                           hintStyle: hintText
                         ),
+                        // validator: (passwordValue){
+                        //     if(passwordValue!.isEmpty){
+                        //       return 'Please enter your password';
+                        //     }
+                        //     password = passwordValue;
+                        //     return null;
+                        //   }
                       ),
                     ),
                     SizedBox(height: 11.h,),
@@ -111,10 +152,14 @@ class Login extends StatelessWidget {
                       ),
                       child: TextButton(
                         onPressed: (){
-                          Navigator.push(
-                            context, 
-                            MaterialPageRoute(builder: (context) => HomeScreen(),)
-                          );
+                          // Navigator.push(
+                          //   context, 
+                          //   MaterialPageRoute(builder: (context) => HomeScreen(),)
+                          // );
+
+                          _login();
+                          
+                          
                         }, 
                         child: Text(
                           "Masuk",
@@ -150,6 +195,35 @@ class Login extends StatelessWidget {
           ),
         ),
     );
+  }
+
+  void _login() async{
+    setState(() {
+      _isLoading = true;
+    });
+
+    email = _email.text.toString();
+    password = _password.text.toString();
+
+    var data = {
+      'email' : email,
+      'password' : password
+    };
+
+    var res = await Network().auth(data, '/login');
+    var body = json.decode(res.body);
+    if(body['meta']['code'] == 200){
+        SharedPreferences localStorage = await SharedPreferences.getInstance();
+        localStorage.setString('token', json.encode(body['data']['access_token']));
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen(),));
+    }else{
+      print(body['meta']['code']);
+      print("$email $password");
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 }
 
