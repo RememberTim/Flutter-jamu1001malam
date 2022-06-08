@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class Network{
-  final String _url = 'http://192.168.0.115/api';
+  final String _url = 'http://192.168.1.17/api';
   // 192.168.1.2 is my IP, change with your IP address
   var token;
 

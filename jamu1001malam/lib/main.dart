@@ -12,13 +12,16 @@ import 'package:jamu1001malam/pages/payScreen.dart';
 import 'package:jamu1001malam/pages/registerScreen.dart';
 import 'package:jamu1001malam/pages/registerScreen2.dart';
 import 'package:jamu1001malam/widgets/themes.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main(){
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp ({Key? key}) : super (key: key);
+
+  var home;
+
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
@@ -32,4 +35,16 @@ class MyApp extends StatelessWidget {
       child: Login(),
     );
   }
+
+  // Future<void> login() async{
+  //   SharedPreferences localStorage = await SharedPreferences.getInstance();
+  //   var _login = localStorage.getBool('isLogin');
+
+  //   // if(_login = true){
+  //   //     home = HomeScreen();
+  //   // }else{
+  //   //   home = Login();
+  //   // }
+  // }
+
 }

@@ -16,11 +16,25 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
 
   bool _isLoading = false;
-  final _formKey = GlobalKey<FormState>();
+  final _formKey1 = GlobalKey<FormState>();
+  final _formKey2 = GlobalKey<FormState>();
   var email, password;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  Future<void> Checklogin() async{
+    SharedPreferences localStorage = await SharedPreferences.getInstance();
+    var _login = localStorage.getBool('isLogin');
 
+    if(_login == true){
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen(),));
+    }
+  }
+
+  void initState(){
+    super.initState();
+    Checklogin();
+  }
+  
   // _showMsg(msg) {
   //   final snackBar = SnackBar(
   //     content: Text(msg),
@@ -84,6 +98,7 @@ class _LoginState extends State<Login> {
                         keyboardType: TextInputType.emailAddress,
                         style: label,
                         decoration: InputDecoration(
+                          // errorText: _errorEmail,
                           contentPadding: EdgeInsets.only(
                             left: 8.w,
                           ),
@@ -101,7 +116,7 @@ class _LoginState extends State<Login> {
                         //     if(emailValue!.isEmpty){
                         //       return 'Please enter your email';
                         //     }
-                        //     password = emailValue;
+                        //     email = emailValue;
                         //     return null;
                         //   }
                       ),
@@ -120,6 +135,7 @@ class _LoginState extends State<Login> {
                         obscureText: true,
                         style: label,
                         decoration: InputDecoration(
+                          // errorText: _errorPass,
                           contentPadding: EdgeInsets.only(
                             left: 8.w,
                           ),
@@ -156,8 +172,11 @@ class _LoginState extends State<Login> {
                           //   context, 
                           //   MaterialPageRoute(builder: (context) => HomeScreen(),)
                           // );
-
+                          // if(_formKey1.currentState!.validate()){
+                            // if(_formKey2.currentState!.validate()){
                           _login();
+                            // } 
+                          // }
                           
                           
                         }, 
@@ -197,6 +216,28 @@ class _LoginState extends State<Login> {
     );
   }
 
+  String? get _errorEmail{
+    final text = _email.value.text;
+
+    if(text.isEmpty){
+      return "Email tidak boleh kosong";
+    }
+
+    return null;
+  }
+
+  String? get _errorPass{
+    final text = _password.value.text;
+
+    if(text.isEmpty){
+      return "Password tidak boleh kosong";
+    }
+    if(text.length<8){
+      return "password harus lebih dari 8";
+    }
+    return null;
+  }
+
   void _login() async{
     setState(() {
       _isLoading = true;
@@ -215,6 +256,7 @@ class _LoginState extends State<Login> {
     if(body['meta']['code'] == 200){
         SharedPreferences localStorage = await SharedPreferences.getInstance();
         localStorage.setString('token', json.encode(body['data']['access_token']));
+        localStorage.setBool('isLogin', true);
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen(),));
     }else{
       print(body['meta']['code']);

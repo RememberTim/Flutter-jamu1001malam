@@ -3,8 +3,11 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:jamu1001malam/model/jamu.dart';
 import 'package:jamu1001malam/pages/cartScreen.dart';
 import 'package:jamu1001malam/pages/detailScreen.dart';
+import 'package:jamu1001malam/pages/login.dart';
+import 'package:jamu1001malam/pages/registerScreen.dart';
 import 'package:jamu1001malam/widgets/themes.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -17,7 +20,11 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
   }
 
-
+  Future<void> logOut() async{
+    SharedPreferences localStorage = await SharedPreferences.getInstance();
+    localStorage.setBool("isLogin", false);
+    Navigator.push(context, MaterialPageRoute(builder: (context) => Login(),));
+  }
 
   int _index = 0;
 
@@ -464,7 +471,20 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     //body profile
     Center(
-      child: Text('Profile'),
+      child: Center(
+        child: Builder(
+          builder: (context) {
+            return FlatButton(
+              onPressed: ()async{
+                SharedPreferences localStorage = await SharedPreferences.getInstance();
+                localStorage.setBool("isLogin", false);
+                Navigator.push(context, MaterialPageRoute(builder: (context) => Login(),));
+              },
+              child: Text("LogOut") 
+            );
+          }
+        ),
+      ),
     ),
   ];
 
