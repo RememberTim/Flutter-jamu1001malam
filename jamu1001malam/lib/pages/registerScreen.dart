@@ -1,10 +1,14 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:jamu1001malam/pages/registerScreen2.dart';
 import 'package:jamu1001malam/widgets/themes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:jamu1001malam/networks/api.dart';
 import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 import 'homeScreen.dart';
 
@@ -17,13 +21,18 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
 
-  String? nama,email,password,alamat,telp;
+  String? nama,email,password,alamat,telp, houseNumber, city;
+  PickedFile? _imageFile;
+  final ImagePicker _picker = ImagePicker();
+
   
   TextEditingController _nama = TextEditingController();
   TextEditingController _email = TextEditingController();
   TextEditingController _password = TextEditingController();
   TextEditingController _alamat = TextEditingController();
   TextEditingController _telp = TextEditingController();
+  TextEditingController _houseNumber = TextEditingController();
+  TextEditingController _city = TextEditingController();
   
   @override
   Widget build(BuildContext context) {
@@ -71,8 +80,27 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 child: Stack(
                   children: <Widget>[
                     CircleAvatar(
-                      radius: 80.0,
-                      backgroundImage: AssetImage('assets/image_empty.png'),
+                      radius: 47.0.w,
+                      backgroundImage: _imageFile == null
+                      ? AssetImage("assets/image_empty.png")
+                      : FileImage(File(_imageFile!.path)) as ImageProvider               
+                    ),
+                    Positioned(
+                      bottom: 20.h,
+                      right: 20.w,
+                      child: InkWell(
+                        onTap: (){
+                          showModalBottomSheet(
+                            context: context, 
+                            builder: ((builder) => bottomSheet()),
+                          );
+                        },
+                        child: Icon(
+                          Icons.camera_alt,
+                          color: Colors.teal,
+                          size: 18.w,
+                        ),
+                      ),
                     )
                   ],
                 )
@@ -225,6 +253,62 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                       ),
                     ),
+                    SizedBox(height: 7.h,),
+                    Text(
+                      'Nomor Rumah',
+                      style: label,
+                    ),
+                    SizedBox(height: 7.h,),
+                    SizedBox(
+                      width: 334.w,
+                      height: 42.h,
+                      child: TextFormField(
+                        controller: _houseNumber,
+                        style: label,
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.only(
+                            left: 8.w,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(5),
+                            borderSide: BorderSide(
+                              color: Colors.grey,
+                              width: 2.0
+                            )
+                          ),
+                          hintText: "Masukkan nomor rumah Anda",
+                          hintStyle: hintText
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 7.h,),
+                    Text(
+                      'Kota',
+                      style: label,
+                    ),
+                    SizedBox(height: 7.h,),
+                    SizedBox(
+                      width: 334.w,
+                      height: 42.h,
+                      child: TextFormField(
+                        controller: _city,
+                        style: label,
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.only(
+                            left: 8.w,
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(5),
+                            borderSide: BorderSide(
+                              color: Colors.grey,
+                              width: 2.0
+                            )
+                          ),
+                          hintText: "Masukkan Kota Anda",
+                          hintStyle: hintText
+                        ),
+                      ),
+                    ),
                     SizedBox(height: 18.h,),
                     Container(
                         width: 334.w,
@@ -265,14 +349,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
     password = _password.text.toString();
     alamat = _alamat.text.toString();
     telp = _telp.text.toString();
+    houseNumber = _houseNumber.text.toString();
+    city = _city.text.toString();
 
     var data = {
       'name' : nama,
       'email' : email,
       'password' : password,
       'password_confirmation' : password,
-      'alamat' : alamat,
-      'telepon' : telp
+      'address' : alamat,
+      'city' : city,
+      'phoneNumber' : telp,
+      'houseNumber' : houseNumber
 
     };
 
@@ -281,10 +369,102 @@ class _RegisterScreenState extends State<RegisterScreen> {
     if(body['meta']['code'] == 200){
         SharedPreferences localStorage = await SharedPreferences.getInstance();
         localStorage.setString('token', json.encode(body['data']['access_token']));
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen(),));
+        if(_imageFile != null){
+          final String _url = 'http://192.168.1.17/api/user/photo';
+          var uri = Uri.parse(_url);
+          SharedPreferences localStorage = await SharedPreferences.getInstance();
+          String token = jsonDecode(localStorage.getString('token')!);
+
+          var request =  http.MultipartRequest('POST', uri);
+          request.files.add(await http.MultipartFile.fromPath('file', _imageFile!.path));
+          request.headers.addAll(
+            {
+              'Content-type': 'multipart/form-data',
+              'Accept': 'application/json',
+              'Authorization': 'Bearer $token',
+            }
+          );
+
+          http.StreamedResponse response = await request.send();
+
+          if(response.statusCode == 200){
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen(),));
+          }else{
+            print(response.statusCode);
+          }
+
+        }else{
+           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen(),));
+        }
+       
     }else{
       print(body['meta']['code']);
       print("$nama + $email + $password + $alamat + $telp");
     }     
   }
+
+  // void _uploadPhoto() async{
+
+    
+
+
+    
+    // var body = json.decode(res.body);
+    // if(body['meta']['code'] == 200){
+    //   print(body['meta']['code']);
+    // }else{
+    //   print(body['meta']['code']);
+    // }
+  // }
+
+
+  Widget bottomSheet() {
+    return Container(
+      height: 100.0,
+      width: MediaQuery.of(context).size.width,
+      margin: EdgeInsets.symmetric(
+        horizontal: 20,
+        vertical: 20,
+      ),
+      child: Column(
+        children: <Widget>[
+          Text(
+            "Choose Profile photo",
+            style: TextStyle(
+              fontSize: 20.0,
+            ),
+          ),
+          SizedBox(
+            height: 20,
+          ),
+          Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+            FlatButton.icon(
+              icon: Icon(Icons.camera),
+              onPressed: () {
+                takePhoto(ImageSource.camera);
+              },
+              label: Text("Camera"),
+            ),
+            FlatButton.icon(
+              icon: Icon(Icons.image),
+              onPressed: () {
+                takePhoto(ImageSource.gallery);
+              },
+              label: Text("Gallery"),
+            ),
+          ])
+        ],
+      ),
+    );
+  }
+
+  void takePhoto(ImageSource source) async {
+    final pickedFile = await _picker.getImage(
+      source: source,
+    );
+    setState(() {
+      _imageFile = pickedFile;
+    });
+  }
+
 }

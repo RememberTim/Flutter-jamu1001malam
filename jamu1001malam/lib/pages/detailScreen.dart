@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:jamu1001malam/model/home/product.dart';
+import 'package:jamu1001malam/pages/payScreen.dart';
 import 'package:jamu1001malam/widgets/themes.dart';
 import '../model/jamu.dart';
 
 class DetailScreen extends StatelessWidget {
   
-  final Jamu jamu;
-  DetailScreen({required this.jamu});
+  // final Jamu jamu;
+  final Products products;
+  DetailScreen({required this.products});
+
+  int total = 2;
 
   @override
   Widget build(BuildContext context) {
@@ -14,8 +19,8 @@ class DetailScreen extends StatelessWidget {
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          Image.asset(
-            jamu.imageAssets!,
+          Image.network(
+            products.picturePath,
             width: 374.w,
             height: 290.h,
             fit: BoxFit.cover,
@@ -43,7 +48,7 @@ class DetailScreen extends StatelessWidget {
                       Expanded(
                         flex: 5,
                         child: Text(
-                          jamu.nama!,
+                          products.name,
                           style: labelDetail,
                         ),
                       ),
@@ -63,7 +68,7 @@ class DetailScreen extends StatelessWidget {
                             ),
                             SizedBox(width: 3.w,),
                             Text(
-                              '14',
+                              '${total}',
                               style: angka,
                             ),
                             SizedBox(width: 3.w,),
@@ -80,7 +85,7 @@ class DetailScreen extends StatelessWidget {
                   ),
                   SizedBox(height: 10.h,),
                   Text(
-                    jamu.deskripsi!,
+                    products.description,
                     style: subTitle,
                   ), 
                   SizedBox(height: 14.h,), 
@@ -90,7 +95,7 @@ class DetailScreen extends StatelessWidget {
                   ),
                   SizedBox(height: 5.h,),
                   Text(
-                    jamu.bahan!,
+                    products.ingredients,
                     style: subTitle,
                   ),
                 ],
@@ -121,7 +126,7 @@ class DetailScreen extends StatelessWidget {
                               style: subTitle,
                             ),
                             Text(
-                              jamu.harga!,
+                              '${products.price}',
                               style: price,
                             )
                           ],
@@ -140,7 +145,9 @@ class DetailScreen extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(5)
                               ),
                               child: TextButton(
-                                onPressed: (){}, 
+                                onPressed: (){
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => PayScreen(products: products, quantity: total,),));
+                                }, 
                                 child: Text(
                                   "Pesan ",
                                   style: buttonPrimaryText,

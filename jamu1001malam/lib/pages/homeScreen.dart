@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:jamu1001malam/model/home/product.dart';
 import 'package:jamu1001malam/model/jamu.dart';
+import 'package:jamu1001malam/networks/api.dart';
 import 'package:jamu1001malam/pages/cartScreen.dart';
 import 'package:jamu1001malam/pages/detailScreen.dart';
 import 'package:jamu1001malam/pages/login.dart';
@@ -98,73 +100,84 @@ class _HomeScreenState extends State<HomeScreen> {
                   Container(
                     width: 375.w,
                     height: 190.h,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemBuilder: (context, index) {
-                        final Jamu jamu = listJamu[index];
-                        return InkWell(
-                          onTap: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context) {
-                            return DetailScreen(jamu: jamu,);
-                            },));
-                          },
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 4.w),
-                            child: Container(
-                              width: 181.w,
-                              height: 187.h,
-                              decoration: BoxDecoration(
-                                color: Color(0xffF5F5F5),
-                                borderRadius: BorderRadius.circular(10.w)
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Image.asset(
-                                    jamu.imageAssets!,
-                                    width: 181.w,
-                                    height: 113.h,
+                    child: FutureBuilder<List<Products>>(
+                      future: Network().getDataHome(),
+                      builder: (context,  snaphot) {
+                        if(snaphot.connectionState == ConnectionState.waiting){
+                          return Center(child: CircularProgressIndicator(),);
+                        }else{
+                          List<Products> listProducts = snaphot.data!;
+                          print(listProducts);
+                          return ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemBuilder: (context, index) {
+                            final Jamu jamu = listJamu[index];
+                            return InkWell(
+                              onTap: () {
+                                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                                return DetailScreen(products: listProducts[index],);
+                                },));
+                              },
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 4.w),
+                                child: Container(
+                                  width: 181.w,
+                                  height: 187.h,
+                                  decoration: BoxDecoration(
+                                    color: Color(0xffF5F5F5),
+                                    borderRadius: BorderRadius.circular(10.w)
                                   ),
-                                  SizedBox(
-                                    height: 13.h,
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.only(left: 11.w),
-                                    child: Text(
-                                      jamu.nama!,
-                                      style: labelHorizontal,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 5.h,
-                                  ),
-                                  Padding(
-                                    padding: EdgeInsets.only(left: 8.w),
-                                    child: RatingBar.builder(
-                                      initialRating: jamu.rating!,
-                                      minRating: 1,
-                                      direction: Axis.horizontal,
-                                      allowHalfRating: true,
-                                      itemCount: 5,
-                                      itemPadding:
-                                          EdgeInsets.symmetric(horizontal: 2),
-                                      itemBuilder: (context, _) => Icon(
-                                        Icons.star,
-                                        color: Colors.amber,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Image.network(
+                                        listProducts[index].picturePath,
+                                        width: 181.w,
+                                        height: 113.h,
                                       ),
-                                      onRatingUpdate: (rating) {
-                                        print(rating);
-                                      },
-                                      itemSize: 20.w,
-                                    ),
-                                  )
-                                ],
+                                      SizedBox(
+                                        height: 13.h,
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.only(left: 11.w),
+                                        child: Text(
+                                          listProducts[index].name,
+                                          style: labelHorizontal,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 5.h,
+                                      ),
+                                      Padding(
+                                        padding: EdgeInsets.only(left: 8.w),
+                                        child: RatingBar.builder(
+                                          initialRating: listProducts[index].rate,
+                                          minRating: 1,
+                                          direction: Axis.horizontal,
+                                          allowHalfRating: true,
+                                          itemCount: 5,
+                                          itemPadding:
+                                              EdgeInsets.symmetric(horizontal: 2),
+                                          itemBuilder: (context, _) => Icon(
+                                            Icons.star,
+                                            color: Colors.amber,
+                                          ),
+                                          onRatingUpdate: (rating) {
+                                            print(rating);
+                                          },
+                                          itemSize: 20.w,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
                               ),
-                            ),
-                          ),
+                            );
+                          },
+                          itemCount: listProducts.length
                         );
-                      },
-                      itemCount: listJamu.length,
+                        }
+                      }
                     ),
                   )
                 ],
@@ -207,11 +220,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         itemBuilder: ((context, index) {
                           final Jamu jamu = listJamu[index];
                           return InkWell(
-                            onTap: (){
-                              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                              return DetailScreen(jamu: jamu,);
-                              },));
-                            },
+                            // onTap: (){
+                            //   Navigator.push(context, MaterialPageRoute(builder: (context) {
+                            //   return DetailScreen(jamu: jamu,);
+                            //   },));
+                            // },
                             child: Padding(
                               padding: EdgeInsets.only(top: 17.h),
                               child: Row(
@@ -372,11 +385,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           itemBuilder: ((context, index) {
                             final Jamu jamu = listJamu[index];
                             return InkWell(
-                              onTap: (){
-                                Navigator.push(context, MaterialPageRoute(builder: (context) {
-                                return DetailScreen(jamu: jamu,);
-                                },));
-                              },
+                              // onTap: (){
+                              //   Navigator.push(context, MaterialPageRoute(builder: (context) {
+                              //   return DetailScreen(jamu: jamu,);
+                              //   },));
+                              // },
                               child: Padding(
                                 padding: EdgeInsets.only(top: 17.h),
                                 child: Row(

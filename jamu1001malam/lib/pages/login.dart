@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:jamu1001malam/model/home/user.dart';
 import 'package:jamu1001malam/pages/homeScreen.dart';
 import 'package:jamu1001malam/pages/registerScreen.dart';
 import 'package:jamu1001malam/widgets/themes.dart';
@@ -254,8 +255,10 @@ class _LoginState extends State<Login> {
     var res = await Network().auth(data, '/login');
     var body = json.decode(res.body);
     if(body['meta']['code'] == 200){
+        // User.fromJson(body['data']['user']);
         SharedPreferences localStorage = await SharedPreferences.getInstance();
         localStorage.setString('token', json.encode(body['data']['access_token']));
+        print(json.encode(body['data']['access_token']));
         localStorage.setBool('isLogin', true);
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen(),));
     }else{
