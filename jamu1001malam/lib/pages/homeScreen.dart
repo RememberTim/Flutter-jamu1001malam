@@ -3,7 +3,6 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:jamu1001malam/model/home/product.dart';
 import 'package:jamu1001malam/model/jamu.dart';
 import 'package:jamu1001malam/networks/api.dart';
-import 'package:jamu1001malam/networks/auth/auth_services.dart';
 import 'package:jamu1001malam/pages/cartScreen.dart';
 import 'package:jamu1001malam/pages/detailScreen.dart';
 import 'package:jamu1001malam/pages/login.dart';
@@ -151,7 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       Padding(
                                         padding: EdgeInsets.only(left: 11.w),
                                         child: Text(
-                                          listProducts[index].name,
+                                          listProducts[index].nama,
                                           style: labelHorizontal,
                                         ),
                                       ),
@@ -161,7 +160,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       Padding(
                                         padding: EdgeInsets.only(left: 8.w),
                                         child: RatingBar.builder(
-                                          initialRating: listProducts[index].rate,
+                                          initialRating: listProducts[index].rating,
                                           minRating: 1,
                                           direction: Axis.horizontal,
                                           allowHalfRating: true,

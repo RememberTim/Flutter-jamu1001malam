@@ -20,11 +20,6 @@ class _DetailScreenState extends State<DetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-
-    var dtl = widget.products.description;
-    int pj = widget.products.description.length;
-    int max = pj-4;
-    String productDescription = dtl.substring(3, max);
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(
@@ -58,7 +53,7 @@ class _DetailScreenState extends State<DetailScreen> {
                       Expanded(
                         flex: 5,
                         child: Text(
-                          widget.products.name,
+                          widget.products.nama,
                           style: labelDetail,
                         ),
                       ),
@@ -103,7 +98,7 @@ class _DetailScreenState extends State<DetailScreen> {
                   ),
                   SizedBox(height: 10.h,),
                   Text(
-                    productDescription,
+                    widget.products.deskripsi,
                     style: subTitle,
                   ), 
                   SizedBox(height: 14.h,), 
@@ -113,7 +108,7 @@ class _DetailScreenState extends State<DetailScreen> {
                   ),
                   SizedBox(height: 5.h,),
                   Text(
-                    widget.products.ingredients,
+                    widget.products.bahan,
                     style: subTitle,
                   ),
                 ],
@@ -144,7 +139,7 @@ class _DetailScreenState extends State<DetailScreen> {
                               style: subTitle,
                             ),
                             Text(
-                              '${widget.products.price}',
+                              '${widget.products.harga}',
                               style: price,
                             )
                           ],

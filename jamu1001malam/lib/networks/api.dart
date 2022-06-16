@@ -27,7 +27,9 @@ class Network{
   checkout(data, apiURL) async{
     SharedPreferences localStorage = await SharedPreferences.getInstance();
     var token1 = localStorage.getString('token')!;
-    var subToken = token1.substring(1,44);
+    int long = token1.length;
+    int max = long - 1;
+    var subToken = token1.substring(1,max);
     var full = _url + apiURL;
     var url = Uri.parse(full);
     Map<String, String> headers = {
@@ -111,7 +113,7 @@ class Network{
   }
 
   Future<List<Products>> getDataHome()async {
-    var apiURL = '/products';
+    var apiURL = '/product';
     var full = _url + apiURL;
     var url = Uri.parse(full);
     try{
@@ -131,7 +133,9 @@ class Network{
   Future<User> getDataUser()async {
     SharedPreferences localStorage = await SharedPreferences.getInstance();
     var token1 = localStorage.getString('token')!;
-    var subToken = token1.substring(1,44);
+    int long = token1.length;
+    int max = long - 1;
+    var subToken = token1.substring(1,max);
     var apiURL = '/user';
     var full = _url + apiURL;
     var url = Uri.parse(full);

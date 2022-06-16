@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:jamu1001malam/model/home/user.dart';
-import 'package:jamu1001malam/networks/auth/auth_services.dart';
 import 'package:jamu1001malam/pages/homeScreen.dart';
 import 'package:jamu1001malam/pages/registerScreen.dart';
 import 'package:jamu1001malam/widgets/themes.dart';

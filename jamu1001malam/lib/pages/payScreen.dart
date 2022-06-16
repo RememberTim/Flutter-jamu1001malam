@@ -8,9 +8,7 @@ import 'package:jamu1001malam/networks/api.dart';
 import 'package:jamu1001malam/widgets/themes.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import '../model/home/user.dart';
-import '../networks/auth/auth_services.dart';
 
 class PayScreen extends StatefulWidget {
   final Products products;
@@ -37,7 +35,7 @@ class _PayScreenState extends State<PayScreen> {
   }
 
   int harga(){
-    int harga = widget.products.price * widget.quantity;
+    int harga = widget.products.harga * widget.quantity;
     return harga;
   }
 
@@ -118,11 +116,11 @@ class _PayScreenState extends State<PayScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            widget.products.name,
+                            widget.products.nama,
                             style: sb14,
                           ),
                           Text(
-                            '${widget.products.price}',
+                            '${widget.products.harga}',
                             style: detail,
                           )
                         ],
@@ -148,7 +146,7 @@ class _PayScreenState extends State<PayScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              widget.products.name,
+                              widget.products.nama,
                               style: subTitle,
                             ),
                             SizedBox(height: 6.h,),
@@ -255,12 +253,12 @@ class _PayScreenState extends State<PayScreen> {
                                   ),
                                   SizedBox(height: 8.h,),
                                   Text(
-                                    snapshot.data!.phoneNumber,
+                                    snapshot.data!.telepon,
                                     style: pesanan,
                                   ),
                                   SizedBox(height: 8.h,),
                                   Text(
-                                    snapshot.data!.address,
+                                    snapshot.data!.alamat,
                                     style: pesanan,
                                   ),
                                 ],
@@ -306,12 +304,12 @@ class _PayScreenState extends State<PayScreen> {
   void checkout() async{
     var products = widget.products;
     var data = {
-      'food_id' : products.id,
+      'product_id' : products.id,
       'user_id' : userid,
       'quantity' : widget.quantity,
       'total' : totalHarga(),
       'total_keuntungan' : products.keuntungan,
-      'status' : 'Ordered'
+      'status' : 'CANCELLED'
   
     };
 

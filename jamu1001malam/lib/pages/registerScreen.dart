@@ -253,62 +253,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 7.h,),
-                    Text(
-                      'Nomor Rumah',
-                      style: label,
-                    ),
-                    SizedBox(height: 7.h,),
-                    SizedBox(
-                      width: 334.w,
-                      height: 42.h,
-                      child: TextFormField(
-                        controller: _houseNumber,
-                        style: label,
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.only(
-                            left: 8.w,
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(5),
-                            borderSide: BorderSide(
-                              color: Colors.grey,
-                              width: 2.0
-                            )
-                          ),
-                          hintText: "Masukkan nomor rumah Anda",
-                          hintStyle: hintText
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 7.h,),
-                    Text(
-                      'Kota',
-                      style: label,
-                    ),
-                    SizedBox(height: 7.h,),
-                    SizedBox(
-                      width: 334.w,
-                      height: 42.h,
-                      child: TextFormField(
-                        controller: _city,
-                        style: label,
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.only(
-                            left: 8.w,
-                          ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(5),
-                            borderSide: BorderSide(
-                              color: Colors.grey,
-                              width: 2.0
-                            )
-                          ),
-                          hintText: "Masukkan Kota Anda",
-                          hintStyle: hintText
-                        ),
-                      ),
-                    ),
                     SizedBox(height: 18.h,),
                     Container(
                         width: 334.w,
@@ -327,7 +271,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             _register();
                           }, 
                           child: Text(
-                            "Masuk",
+                            "Daftar",
                             style: buttonPrimaryText,
                           )
                         ),
@@ -357,10 +301,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
       'email' : email,
       'password' : password,
       'password_confirmation' : password,
-      'address' : alamat,
-      'city' : city,
-      'phoneNumber' : telp,
-      'houseNumber' : houseNumber
+      'alamat' : alamat,
+      'telepon' : telp
 
     };
 

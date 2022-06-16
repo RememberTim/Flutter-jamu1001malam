@@ -1,12 +1,11 @@
 class Products {
-
     int id;
-    String name;
-    String description;
-    String ingredients;
-    int price;
-    double rate;
-    String types;
+    String nama;
+    String deskripsi;
+    String bahan;
+    int harga;
+    double rating;
+    String tipe;
     String stok;
     String keuntungan;
     String picturePath;
@@ -14,14 +13,14 @@ class Products {
     int createdAt;
     int updatedAt;
 
-    Products({
+        Products({
         required this.id,
-        required this.name,
-        required this.description,
-        required this.ingredients,
-        required this.price,
-        required this.rate,
-        required this.types,
+        required this.nama,
+        required this.deskripsi,
+        required this.bahan,
+        required this.harga,
+        required this.rating,
+        required this.tipe,
         required this.stok,
         required this.keuntungan,
         required this.picturePath,
@@ -32,12 +31,12 @@ class Products {
 
     factory Products.fromJson(Map<String, dynamic> json) => Products(
         id: json["id"],
-        name: json["name"],
-        description: json["description"],
-        ingredients: json["ingredients"],
-        price: json["price"],
-        rate: json["rate"].toDouble(),
-        types: json["types"],
+        nama: json["nama"],
+        deskripsi: json["deskripsi"],
+        bahan: json["bahan"],
+        harga: json["harga"],
+        rating: json["rating"].toDouble(),
+        tipe: json["tipe"],
         stok: json["stok"],
         keuntungan: json["keuntungan"],
         picturePath: json["picturePath"],
@@ -48,12 +47,12 @@ class Products {
 
     Map<String, dynamic> toJson() => {
         "id": id,
-        "name": name,
-        "description": description,
-        "ingredients": ingredients,
-        "price": price,
-        "rate": rate,
-        "types": types,
+        "nama": nama,
+        "deskripsi": deskripsi,
+        "bahan": bahan,
+        "harga": harga,
+        "rating": rating,
+        "tipe": tipe,
         "stok": stok,
         "keuntungan": keuntungan,
         "picturePath": picturePath,
