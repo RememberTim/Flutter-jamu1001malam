@@ -1,10 +1,53 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:jamu1001malam/model/home/product.dart';
+import 'package:jamu1001malam/networks/api.dart';
 import 'package:jamu1001malam/widgets/themes.dart';
+import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-class PayScreen extends StatelessWidget {
-  const PayScreen({ Key? key }) : super(key: key);
+import '../model/home/user.dart';
+import '../networks/auth/auth_services.dart';
+
+class PayScreen extends StatefulWidget {
+  final Products products;
+
+  int quantity;
+  PayScreen({
+    required this.products,
+    required this.quantity
+  });
+
+  @override
+  State<PayScreen> createState() => _PayScreenState();
+}
+
+class _PayScreenState extends State<PayScreen> {
+  late Future<User> futureUser;
+  int userid = 0;
+
+  @override
+  initState(){
+
+    futureUser = Network().getDataUser();
+    super.initState();
+  }
+
+  int harga(){
+    int harga = widget.products.price * widget.quantity;
+    return harga;
+  }
+
+  int totalHarga(){
+    var ongkir = 10000;
+    var total = harga() + ongkir;
+
+    return total;
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -60,8 +103,8 @@ class PayScreen extends StatelessWidget {
                   Row(
                     children: [
                       Container(
-                        child: Image.asset(
-                          'assets/image_jamu.png',
+                        child: Image.network(
+                          widget.products.picturePath,
                           width: 71,
                           height: 67,
                           fit: BoxFit.cover,
@@ -75,18 +118,18 @@ class PayScreen extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Avosalado',
+                            widget.products.name,
                             style: sb14,
                           ),
                           Text(
-                            '3 items IDR 18.000',
+                            '${widget.products.price}',
                             style: detail,
                           )
                         ],
                       ),
                       SizedBox(width: 60.w,),
                       Text(
-                        '14 Items',
+                        '${widget.quantity} Items',
                         style: detail,
                       )
                     ],
@@ -105,7 +148,7 @@ class PayScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'Avosalado',
+                              widget.products.name,
                               style: subTitle,
                             ),
                             SizedBox(height: 6.h,),
@@ -127,17 +170,17 @@ class PayScreen extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               Text(
-                                'IDR 18.000',
+                                '${harga()}',
                                 style: pesanan,
                               ),
                               SizedBox(height: 8.h,),
                               Text(
-                                'IDR 10.000',
+                                '10000',
                                 style: pesanan,
                               ),
                               SizedBox(height: 8.h,),
                               Text(
-                                'IDR 28.000',
+                                '${totalHarga()}',
                                 style: GoogleFonts.inter(
                                   color: Color(0xff43BD8A),
                                   fontSize: 14.sp,
@@ -197,30 +240,42 @@ class PayScreen extends StatelessWidget {
                         ),
                         Expanded(
                           key: Key("Expanded Row Root Kanan"),
-                          child: Column(
-                            key: Key("Text Center Right"),
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text(
-                                'Zainur Roziqin',
-                                style: pesanan,
-                              ),
-                              SizedBox(height: 8.h,),
-                              Text(
-                                '083891667303',
-                                style: pesanan,
-                              ),
-                              SizedBox(height: 8.h,),
-                              Text(
-                                'Jalan Merak',
-                                style: pesanan,
-                              ),
-                            ],
-                          ),
+                          child: FutureBuilder<User>(
+                            future: futureUser,
+                            builder: (context, snapshot) {
+                              if(snapshot.hasData){
+                                userid = snapshot.data!.id;
+                                return Column(
+                                key: Key("Text Center Right"),
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    snapshot.data!.name,
+                                    style: pesanan,
+                                  ),
+                                  SizedBox(height: 8.h,),
+                                  Text(
+                                    snapshot.data!.phoneNumber,
+                                    style: pesanan,
+                                  ),
+                                  SizedBox(height: 8.h,),
+                                  Text(
+                                    snapshot.data!.address,
+                                    style: pesanan,
+                                  ),
+                                ],
+                              );
+                              }else{
+                                return Text('gagal');
+                              }
+                              
+                            }
+                          )
                         )
                       ]
                     ),
                   ),
+                  
                   SizedBox(height: 80.h,),
                   Container(
                       width: 334.w,
@@ -230,7 +285,9 @@ class PayScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(5)
                       ),
                       child: TextButton(
-                        onPressed: (){}, 
+                        onPressed: (){
+                          checkout();
+                        }, 
                         child: Text(
                           "Buat Pesanan",
                           style: buttonPrimaryText,
@@ -244,5 +301,42 @@ class PayScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void checkout() async{
+    var products = widget.products;
+    var data = {
+      'food_id' : products.id,
+      'user_id' : userid,
+      'quantity' : widget.quantity,
+      'total' : totalHarga(),
+      'total_keuntungan' : products.keuntungan,
+      'status' : 'Ordered'
+  
+    };
+
+    var res = await Network().checkout(data, '/checkout');
+    var body = json.decode(res.body);
+    if(body['meta']['code'] == 200){
+      // print(json.encode(body['data']));
+      String url = json.encode(body['data']['payment_url']);
+      int lt = url.length;
+      int max = lt-1;
+      String fullUrl = url.substring(1, max);
+      _launchWeb(fullUrl);
+    }
+
+
+    // print(data);
+    // String url  = 'https://app.sandbox.midtrans.com/snap/v3/redirection/197316f1-457b-4728-b7d1-19e5bddd51ba';
+    // _launchWeb(url);
+  }
+
+  void _launchWeb(String url) async{
+    if(await canLaunch(url)){
+      await launch(url);
+    }else{
+      print('gagal');
+    }
   }
 }

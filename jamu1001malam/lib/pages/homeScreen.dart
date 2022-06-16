@@ -3,12 +3,14 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:jamu1001malam/model/home/product.dart';
 import 'package:jamu1001malam/model/jamu.dart';
 import 'package:jamu1001malam/networks/api.dart';
+import 'package:jamu1001malam/networks/auth/auth_services.dart';
 import 'package:jamu1001malam/pages/cartScreen.dart';
 import 'package:jamu1001malam/pages/detailScreen.dart';
 import 'package:jamu1001malam/pages/login.dart';
 import 'package:jamu1001malam/pages/registerScreen.dart';
 import 'package:jamu1001malam/widgets/themes.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -17,15 +19,19 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  
 
-  void initState(){
-    super.initState();
-  }
 
   Future<void> logOut() async{
     SharedPreferences localStorage = await SharedPreferences.getInstance();
     localStorage.setBool("isLogin", false);
     Navigator.push(context, MaterialPageRoute(builder: (context) => Login(),));
+  }
+
+  Future<void> getToken() async{
+    SharedPreferences localStorage = await SharedPreferences.getInstance();
+    String token = localStorage.getString('token')!;
+    print(token);
   }
 
   int _index = 0;
@@ -66,10 +72,14 @@ class _HomeScreenState extends State<HomeScreen> {
                       Builder(
                         builder: (context) {
                           return GestureDetector(
-                            onTap:() {
-                              Navigator.push(context, MaterialPageRoute(builder: (context) {
-                                return CartScreen();
-                              },));
+                            onTap:() async{
+                              // Navigator.push(context, MaterialPageRoute(builder: (context) {
+                              //   return CartScreen();
+                              // },));
+                              // getToken();
+                              SharedPreferences localStorage = await SharedPreferences.getInstance();
+                              String token = localStorage.getString('token')!;
+                              print(token);
                             },
                             child: Image.asset(
                               'assets/image_keranjang_home.png',

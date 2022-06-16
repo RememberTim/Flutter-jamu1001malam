@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:jamu1001malam/model/home/user.dart';
+import 'package:jamu1001malam/networks/auth/auth_services.dart';
 import 'package:jamu1001malam/pages/homeScreen.dart';
 import 'package:jamu1001malam/pages/registerScreen.dart';
 import 'package:jamu1001malam/widgets/themes.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:jamu1001malam/networks/api.dart';
 import 'dart:convert';
@@ -255,9 +257,9 @@ class _LoginState extends State<Login> {
     var res = await Network().auth(data, '/login');
     var body = json.decode(res.body);
     if(body['meta']['code'] == 200){
-        // User.fromJson(body['data']['user']);
+        User.fromJson(body['data']['user']);
         SharedPreferences localStorage = await SharedPreferences.getInstance();
-        localStorage.setString('token', json.encode(body['data']['access_token']));
+        await localStorage.setString('token', jsonEncode(body['data']['access_token']));
         print(json.encode(body['data']['access_token']));
         localStorage.setBool('isLogin', true);
         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen(),));
@@ -269,6 +271,30 @@ class _LoginState extends State<Login> {
     setState(() {
       _isLoading = false;
     });
+
+    // email = _email.text.toString();
+    // password = _password.text.toString();
+
+    // AuthProvider auth = Provider.of<AuthProvider>(context, listen: false);
+    // if(await auth.login(
+    //   email: email,
+    //   password: password
+    // )){
+    //   Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen(),));
+    //   SharedPreferences localStorage = await SharedPreferences.getInstance();
+    //   localStorage.setBool('isLogin', true);
+    // }else{
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //       const SnackBar(
+    //         backgroundColor: Colors.red,
+    //         content: Text(
+    //           'Gagal Login!',
+    //           textAlign: TextAlign.center,
+    //         ),
+    //       ),
+    //     );
+    // }
+
   }
 }
 

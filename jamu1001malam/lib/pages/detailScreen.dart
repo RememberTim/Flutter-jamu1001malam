@@ -5,22 +5,32 @@ import 'package:jamu1001malam/pages/payScreen.dart';
 import 'package:jamu1001malam/widgets/themes.dart';
 import '../model/jamu.dart';
 
-class DetailScreen extends StatelessWidget {
+class DetailScreen extends StatefulWidget {
   
   // final Jamu jamu;
   final Products products;
   DetailScreen({required this.products});
 
-  int total = 2;
+  @override
+  State<DetailScreen> createState() => _DetailScreenState();
+}
+
+class _DetailScreenState extends State<DetailScreen> {
+  int total = 1;
 
   @override
   Widget build(BuildContext context) {
+
+    var dtl = widget.products.description;
+    int pj = widget.products.description.length;
+    int max = pj-4;
+    String productDescription = dtl.substring(3, max);
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(
         children: [
           Image.network(
-            products.picturePath,
+            widget.products.picturePath,
             width: 374.w,
             height: 290.h,
             fit: BoxFit.cover,
@@ -48,7 +58,7 @@ class DetailScreen extends StatelessWidget {
                       Expanded(
                         flex: 5,
                         child: Text(
-                          products.name,
+                          widget.products.name,
                           style: labelDetail,
                         ),
                       ),
@@ -61,7 +71,11 @@ class DetailScreen extends StatelessWidget {
                             ),
                             SizedBox(width: 3.w,),
                             GestureDetector(
-                              onTap: (){},
+                              onTap: (){
+                                setState(() {
+                                  total--;
+                                });
+                              },
                               child: Image.asset(
                                 'assets/image_minus.png'
                               ),
@@ -73,7 +87,11 @@ class DetailScreen extends StatelessWidget {
                             ),
                             SizedBox(width: 3.w,),
                             GestureDetector(
-                              onTap: (){},
+                              onTap: (){
+                                setState(() {
+                                  total++;
+                                });
+                              },
                               child: Image.asset(
                                 'assets/image_plus.png'
                               ),
@@ -85,7 +103,7 @@ class DetailScreen extends StatelessWidget {
                   ),
                   SizedBox(height: 10.h,),
                   Text(
-                    products.description,
+                    productDescription,
                     style: subTitle,
                   ), 
                   SizedBox(height: 14.h,), 
@@ -95,7 +113,7 @@ class DetailScreen extends StatelessWidget {
                   ),
                   SizedBox(height: 5.h,),
                   Text(
-                    products.ingredients,
+                    widget.products.ingredients,
                     style: subTitle,
                   ),
                 ],
@@ -126,7 +144,7 @@ class DetailScreen extends StatelessWidget {
                               style: subTitle,
                             ),
                             Text(
-                              '${products.price}',
+                              '${widget.products.price}',
                               style: price,
                             )
                           ],
@@ -146,7 +164,7 @@ class DetailScreen extends StatelessWidget {
                               ),
                               child: TextButton(
                                 onPressed: (){
-                                  Navigator.push(context, MaterialPageRoute(builder: (context) => PayScreen(products: products, quantity: total,),));
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) => PayScreen(products: widget.products, quantity: total,),));
                                 }, 
                                 child: Text(
                                   "Pesan ",
