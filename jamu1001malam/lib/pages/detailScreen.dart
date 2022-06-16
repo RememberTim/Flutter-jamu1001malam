@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:jamu1001malam/model/home/product.dart';
 import 'package:jamu1001malam/pages/payScreen.dart';
+import 'package:jamu1001malam/widgets/formatRupiah.dart';
 import 'package:jamu1001malam/widgets/themes.dart';
 import '../model/jamu.dart';
 
@@ -139,7 +140,7 @@ class _DetailScreenState extends State<DetailScreen> {
                               style: subTitle,
                             ),
                             Text(
-                              '${widget.products.harga}',
+                              FormatRupiah.convertToIdr(widget.products.harga),
                               style: price,
                             )
                           ],

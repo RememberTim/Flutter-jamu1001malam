@@ -271,29 +271,6 @@ class _LoginState extends State<Login> {
       _isLoading = false;
     });
 
-    // email = _email.text.toString();
-    // password = _password.text.toString();
-
-    // AuthProvider auth = Provider.of<AuthProvider>(context, listen: false);
-    // if(await auth.login(
-    //   email: email,
-    //   password: password
-    // )){
-    //   Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen(),));
-    //   SharedPreferences localStorage = await SharedPreferences.getInstance();
-    //   localStorage.setBool('isLogin', true);
-    // }else{
-    //   ScaffoldMessenger.of(context).showSnackBar(
-    //       const SnackBar(
-    //         backgroundColor: Colors.red,
-    //         content: Text(
-    //           'Gagal Login!',
-    //           textAlign: TextAlign.center,
-    //         ),
-    //       ),
-    //     );
-    // }
-
   }
 }
 
