@@ -1,19 +1,7 @@
-class Products {
-    int id;
-    String nama;
-    String deskripsi;
-    String bahan;
-    int harga;
-    double rating;
-    String tipe;
-    String stok;
-    String keuntungan;
-    String picturePath;
-    dynamic deletedAt;
-    int createdAt;
-    int updatedAt;
+import 'dart:ffi';
 
-        Products({
+class Products {
+    Products({
         required this.id,
         required this.nama,
         required this.deskripsi,
@@ -29,13 +17,27 @@ class Products {
         required this.updatedAt,
     });
 
+    int id;
+    String nama;
+    String deskripsi;
+    String bahan;
+    String harga;
+    String rating;
+    String tipe;
+    String stok;
+    String keuntungan;
+    String picturePath;
+    dynamic deletedAt;
+    int createdAt;
+    int updatedAt;
+
     factory Products.fromJson(Map<String, dynamic> json) => Products(
         id: json["id"],
         nama: json["nama"],
         deskripsi: json["deskripsi"],
         bahan: json["bahan"],
         harga: json["harga"],
-        rating: json["rating"].toDouble(),
+        rating: json["rating"],
         tipe: json["tipe"],
         stok: json["stok"],
         keuntungan: json["keuntungan"],

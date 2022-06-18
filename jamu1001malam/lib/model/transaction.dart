@@ -19,11 +19,11 @@ class Transaction {
     });
 
     int id;
-    int userId;
-    int productId;
-    int quantity;
-    int total;
-    int totalKeuntungan;
+    String userId;
+    String productId;
+    String quantity;
+    String total;
+    String totalKeuntungan;
     String status;
     String paymentUrl;
     dynamic deletedAt;

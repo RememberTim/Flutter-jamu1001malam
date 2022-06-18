@@ -38,6 +38,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   
 
+  
+
   int _index = 0;
 
   final tabs = [
@@ -164,7 +166,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       Padding(
                                         padding: EdgeInsets.only(left: 8.w),
                                         child: RatingBar.builder(
-                                          initialRating: listProducts[index].rating,
+                                          initialRating: double.parse(listProducts[index].rating) ,
                                           minRating: 1,
                                           direction: Axis.horizontal,
                                           allowHalfRating: true,
@@ -239,11 +241,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             scrollDirection: Axis.vertical,
                             itemBuilder: ((context, index) {
                               return InkWell(
-                                // onTap: (){
-                                //   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                                //   return DetailScreen(jamu: jamu,);
-                                //   },));
-                                // },
+                                onTap: (){
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                                  return DetailScreen(products: products[index]);
+                                  },));
+                                },
                                 child: Padding(
                                   padding: EdgeInsets.only(top: 17.h),
                                   child: Row(
@@ -271,7 +273,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             ),
                                             SizedBox(height: 3.h,),
                                             Text(
-                                              FormatRupiah.convertToIdr(products[index].harga),
+                                              FormatRupiah.convertToIdr(int.parse(products[index].harga)),
                                               style: hintText,
                                             ),
                                           ],
@@ -282,7 +284,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         child: Row(
                                           children: [
                                             RatingBar.builder(
-                                              initialRating: products[index].rating,
+                                              initialRating: double.parse(products[index].rating) ,
                                               minRating: 1,
                                               direction: Axis.horizontal,
                                               allowHalfRating: true,
@@ -335,11 +337,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             scrollDirection: Axis.vertical,
                             itemBuilder: ((context, index) {
                               return InkWell(
-                                // onTap: (){
-                                //   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                                //   return DetailScreen(jamu: jamu,);
-                                //   },));
-                                // },
+                                onTap: (){
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                                  return DetailScreen(products: products[index],);
+                                  },));
+                                },
                                 child: Padding(
                                   padding: EdgeInsets.only(top: 17.h),
                                   child: Row(
@@ -367,7 +369,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             ),
                                             SizedBox(height: 3.h,),
                                             Text(
-                                              FormatRupiah.convertToIdr(products[index].harga),
+                                              FormatRupiah.convertToIdr(int.parse(products[index].harga)),
                                               style: hintText,
                                             ),
                                           ],
@@ -378,7 +380,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         child: Row(
                                           children: [
                                             RatingBar.builder(
-                                              initialRating: products[index].rating,
+                                              initialRating: double.parse(products[index].rating) ,
                                               minRating: 1,
                                               direction: Axis.horizontal,
                                               allowHalfRating: true,
@@ -431,11 +433,11 @@ class _HomeScreenState extends State<HomeScreen> {
                             scrollDirection: Axis.vertical,
                             itemBuilder: ((context, index) {
                               return InkWell(
-                                // onTap: (){
-                                //   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                                //   return DetailScreen(jamu: jamu,);
-                                //   },));
-                                // },
+                                onTap: (){
+                                  Navigator.push(context, MaterialPageRoute(builder: (context) {
+                                  return DetailScreen(products: products[index],);
+                                  },));
+                                },
                                 child: Padding(
                                   padding: EdgeInsets.only(top: 17.h),
                                   child: Row(
@@ -463,7 +465,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             ),
                                             SizedBox(height: 3.h,),
                                             Text(
-                                              FormatRupiah.convertToIdr(products[index].harga),
+                                              FormatRupiah.convertToIdr(int.parse(products[index].harga)),
                                               style: hintText,
                                             ),
                                           ],
@@ -474,7 +476,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         child: Row(
                                           children: [
                                             RatingBar.builder(
-                                              initialRating: products[index].rating,
+                                              initialRating: double.parse(products[index].rating) ,
                                               minRating: 1,
                                               direction: Axis.horizontal,
                                               allowHalfRating: true,
@@ -625,7 +627,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                               ),
                                               SizedBox(height: 3.h,),
                                               Text(
-                                                '${transaction[index].quantity} items ' + FormatRupiah.convertToIdr(transaction[index].total),
+                                                '${transaction[index].quantity} items ' + FormatRupiah.convertToIdr(int.parse(transaction[index].total)),
                                                 style: hintText,
                                               ),
                                             ],
@@ -659,7 +661,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               return ListView.builder(
                               scrollDirection: Axis.vertical,
                               itemBuilder: ((context, index) {
-                                final Jamu jamu = listJamu[index];
+                                // final Jamu jamu = listJamu[index];
                                 return InkWell(
                                   // onTap: (){
                                   //   Navigator.push(context, MaterialPageRoute(builder: (context) {
@@ -693,7 +695,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                               ),
                                               SizedBox(height: 3.h,),
                                               Text(
-                                                 '${transaction[index].quantity} items ' + FormatRupiah.convertToIdr(transaction[index].total),
+                                                 '${transaction[index].quantity} items ' + FormatRupiah.convertToIdr(int.parse(transaction[index].total)),
                                                 style: hintText,
                                               ),
                                             ],
@@ -740,7 +742,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             return ListView.builder(
                               scrollDirection: Axis.vertical,
                               itemBuilder: ((context, index) {
-                                final Jamu jamu = listJamu[index];
+                                // final Jamu jamu = listJamu[index];
                                 return InkWell(
                                   // onTap: (){
                                   //   Navigator.push(context, MaterialPageRoute(builder: (context) {
@@ -774,7 +776,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                               ),
                                               SizedBox(height: 3.h,),
                                               Text(
-                                                 '${transaction[index].quantity} items ' + FormatRupiah.convertToIdr(transaction[index].total),
+                                                 '${transaction[index].quantity} items ' + FormatRupiah.convertToIdr(int.parse(transaction[index].total)),
                                                 style: hintText,
                                               ),
                                             ],

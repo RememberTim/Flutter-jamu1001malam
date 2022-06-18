@@ -35,7 +35,7 @@ class _PayScreenState extends State<PayScreen> {
   }
 
   int harga(){
-    int harga = widget.products.harga * widget.quantity;
+    int harga = int.parse(widget.products.harga)  * widget.quantity;
     return harga;
   }
 

@@ -140,7 +140,7 @@ class _DetailScreenState extends State<DetailScreen> {
                               style: subTitle,
                             ),
                             Text(
-                              FormatRupiah.convertToIdr(widget.products.harga),
+                              FormatRupiah.convertToIdr(int.parse(widget.products.harga)),
                               style: price,
                             )
                           ],

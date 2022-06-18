@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:jamu1001malam/pages/Splashscreen.dart';
 import 'package:jamu1001malam/pages/acceptScreen.dart';
 import 'package:jamu1001malam/pages/cancelScreen.dart';
 import 'package:jamu1001malam/pages/cartScreen.dart';
@@ -32,19 +33,7 @@ class MyApp extends StatelessWidget {
           home: child,
         );
       },
-      child: Login(),
+      child: Splashscreen(),
     );
   }
-
-  // Future<void> login() async{
-  //   SharedPreferences localStorage = await SharedPreferences.getInstance();
-  //   var _login = localStorage.getBool('isLogin');
-
-  //   // if(_login = true){
-  //   //     home = HomeScreen();
-  //   // }else{
-  //   //   home = Login();
-  //   // }
-  // }
-
 }

@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class Network{
-  final String _url = 'http://192.168.0.117/api';
+  final String _url = 'https://ws-tif.com/kel3/api';
   // 192.168.1.2 is my IP, change with your IP address
   var token;
 
@@ -139,7 +139,7 @@ class Network{
     var url = Uri.parse(full);
     try{
       final response = await http.get(url, headers: _setHeaders());
-      if(response.statusCode == 200){
+      if(jsonDecode(response.body)['meta']['code'] == 200){
         var json =jsonDecode(response.body);
         final parsed = json['data']['data'].cast<Map<String, dynamic>>();
         return parsed.map<Products>((json) =>Products.fromJson(json)).toList();
@@ -147,6 +147,7 @@ class Network{
         return[];
       }
     }catch(e){
+      print(e);  
       return[];
     }
   }
