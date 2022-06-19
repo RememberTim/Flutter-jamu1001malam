@@ -4,28 +4,31 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:jamu1001malam/model/home/product.dart';
+import 'package:jamu1001malam/model/transaction.dart';
 import 'package:jamu1001malam/networks/api.dart';
+import 'package:jamu1001malam/pages/homeScreen.dart';
 import 'package:jamu1001malam/widgets/themes.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../model/home/user.dart';
 
-class PayScreen extends StatefulWidget {
-  final Products products;
+class DeliveryScreen extends StatefulWidget {
+  final Transaction transaction;
 
   int quantity;
-  PayScreen({
-    required this.products,
+  DeliveryScreen({
+    required this.transaction,
     required this.quantity
   });
 
   @override
-  State<PayScreen> createState() => _PayScreenState();
+  State<DeliveryScreen> createState() => _DeliveryScreenState();
 }
 
-class _PayScreenState extends State<PayScreen> {
+class _DeliveryScreenState extends State<DeliveryScreen> {
   late Future<User> futureUser;
   int userid = 0;
+  bool pesananDiterima = false;
 
   @override
   initState(){
@@ -35,7 +38,7 @@ class _PayScreenState extends State<PayScreen> {
   }
 
   int harga(){
-    int harga = int.parse(widget.products.harga)  * widget.quantity;
+    int harga = int.parse(widget.transaction.product.harga)  * widget.quantity;
     return harga;
   }
 
@@ -102,7 +105,7 @@ class _PayScreenState extends State<PayScreen> {
                     children: [
                       Container(
                         child: Image.network(
-                          widget.products.picturePath,
+                          widget.transaction.product.picturePath,
                           width: 71,
                           height: 67,
                           fit: BoxFit.cover,
@@ -116,11 +119,11 @@ class _PayScreenState extends State<PayScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            widget.products.nama,
+                            widget.transaction.product.nama,
                             style: sb14,
                           ),
                           Text(
-                            '${widget.products.harga}',
+                            '${widget.transaction.product.harga}',
                             style: detail,
                           )
                         ],
@@ -146,7 +149,7 @@ class _PayScreenState extends State<PayScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              widget.products.nama,
+                              widget.transaction.product.nama,
                               style: subTitle,
                             ),
                             SizedBox(height: 6.h,),
@@ -279,15 +282,18 @@ class _PayScreenState extends State<PayScreen> {
                       width: 334.w,
                       height: 42.h,
                       decoration: BoxDecoration(
-                        color: primaryColor,
+                        color: Colors.green,
                         borderRadius: BorderRadius.circular(5)
                       ),
                       child: TextButton(
                         onPressed: (){
                           checkout();
+                          if(pesananDiterima = true){
+                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen(),));
+                          }
                         }, 
                         child: Text(
-                          "Buat Pesanan",
+                          "Pesanan Diterima",
                           style: buttonPrimaryText,
                         )
                       ),
@@ -302,26 +308,19 @@ class _PayScreenState extends State<PayScreen> {
   }
 
   void checkout() async{
-    var products = widget.products;
+    // var products = widget.transaction.product;
     var data = {
-      'product_id' : products.id,
-      'user_id' : userid,
-      'quantity' : widget.quantity,
-      'total' : totalHarga(),
-      'total_keuntungan' : products.keuntungan,
-      'status' : 'PENDING'
+      'status' : 'SUCCESS'
   
     };
 
-    var res = await Network().checkout(data, '/checkout');
+    var res = await Network().pesananDiterima(data, '/transaction/${widget.transaction.id}');
     var body = json.decode(res.body);
     if(body['meta']['code'] == 200){
       // print(json.encode(body['data']));
-      String url = json.encode(body['data']['payment_url']);
-      int lt = url.length;
-      int max = lt-1;
-      String fullUrl = url.substring(1, max);
-      _launchWeb(fullUrl);
+      pesananDiterima = true;
+    }else{
+      print('gagal');
     }
 
 

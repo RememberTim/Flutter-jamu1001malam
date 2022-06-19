@@ -7,10 +7,14 @@ import 'package:jamu1001malam/model/home/user.dart';
 import 'package:jamu1001malam/model/jamu.dart';
 import 'package:jamu1001malam/model/transaction.dart';
 import 'package:jamu1001malam/networks/api.dart';
+import 'package:jamu1001malam/pages/cancelledScreen.dart';
 import 'package:jamu1001malam/pages/cartScreen.dart';
+import 'package:jamu1001malam/pages/deliveryScreen.dart';
 import 'package:jamu1001malam/pages/detailScreen.dart';
 import 'package:jamu1001malam/pages/login.dart';
+import 'package:jamu1001malam/pages/payScreen.dart';
 import 'package:jamu1001malam/pages/registerScreen.dart';
+import 'package:jamu1001malam/pages/waitingScreen.dart';
 import 'package:jamu1001malam/widgets/formatRupiah.dart';
 import 'package:jamu1001malam/widgets/themes.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -522,7 +526,7 @@ class _HomeScreenState extends State<HomeScreen> {
     //body Berlangsung
     SafeArea(
         child: DefaultTabController(
-          length: 3,
+          length: 4,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -556,7 +560,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 tabs: [
                   Tab(
                     child: Text(
-                      'Berlangsung',
+                      'Waiting',
+                      style: subTitle,
+                    ),
+                  ),
+                  Tab(
+                    child: Text(
+                      'Dikirim',
                       style: subTitle,
                     ),
                   ),
@@ -565,7 +575,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       'Selesai',
                       style: subTitle,
                     ),
-                  ),
+                  ), 
                   Tab(
                     child: Text(
                       'Batal',
@@ -593,13 +603,13 @@ class _HomeScreenState extends State<HomeScreen> {
                             return ListView.builder(
                               scrollDirection: Axis.vertical,
                               itemBuilder: ((context, index) {
-                                final Jamu jamu = listJamu[index];
+                                // final Jamu jamu = listJamu[index];
                                 return InkWell(
-                                  // onTap: (){
-                                  //   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                                  //   return DetailScreen(jamu: jamu,);
-                                  //   },));
-                                  // },
+                                  onTap: (){
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) {
+                                    return WaitingScreen(transaction : transaction[index], quantity: int.parse(transaction[index].quantity));
+                                    },));
+                                  },
                                   child: Padding(
                                     padding: EdgeInsets.only(top: 17.h),
                                     child: Row(
@@ -654,7 +664,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         width: 375.w,
                         height: 150.h,
                         child: FutureBuilder<List<Transaction>>(
-                          future: Network().getDataTransactionSelesai(),
+                          future: Network().getDataTransactionDikirim(),
                           builder: (context, snapshot) {
                             if(snapshot.hasData){
                               List<Transaction> transaction = snapshot.data!;
@@ -663,11 +673,11 @@ class _HomeScreenState extends State<HomeScreen> {
                               itemBuilder: ((context, index) {
                                 // final Jamu jamu = listJamu[index];
                                 return InkWell(
-                                  // onTap: (){
-                                  //   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                                  //   return DetailScreen(jamu: jamu,);
-                                  //   },));
-                                  // },
+                                  onTap: (){
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) {
+                                    return DeliveryScreen(transaction : transaction[index], quantity: int.parse(transaction[index].quantity));
+                                    },));
+                                  },
                                   child: Padding(
                                     padding: EdgeInsets.only(top: 17.h),
                                     child: Row(
@@ -733,6 +743,75 @@ class _HomeScreenState extends State<HomeScreen> {
                         width: 375.w,
                         height: 150.h,
                         child: FutureBuilder<List<Transaction>>(
+                          future: Network().getDataTransactionSelesai(),
+                          builder: (context, snapshot) {
+                            if(snapshot.connectionState == ConnectionState.waiting){
+                              return Center(child: CircularProgressIndicator(),);
+                            }else{
+                              List<Transaction> transaction = snapshot.data!;
+                            return ListView.builder(
+                              scrollDirection: Axis.vertical,
+                              itemBuilder: ((context, index) {
+                                // final Jamu jamu = listJamu[index];
+                                return InkWell(
+                                  onTap: (){
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) {
+                                    return NoButtonOrderScreen(products: transaction[index].product, quantity: int.parse(transaction[index].quantity));
+                                    },));
+                                  },
+                                  child: Padding(
+                                    padding: EdgeInsets.only(top: 17.h),
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          width: 71.w,
+                                          height: 67.h,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(5.w),
+                                            image: DecorationImage(
+                                              image: NetworkImage(transaction[index].product.picturePath),
+                                              fit: BoxFit.cover,
+                                            ),  
+                                          ),
+                                        ),
+                                        SizedBox(width: 19.w,),
+                                        Expanded(
+                                          flex: 1,
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                transaction[index].product.nama,
+                                                style: sb14,
+                                              ),
+                                              SizedBox(height: 3.h,),
+                                              Text(
+                                                 '${transaction[index].quantity} items ' + FormatRupiah.convertToIdr(int.parse(transaction[index].total)),
+                                                style: hintText,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        SizedBox(height: 17.h)
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              }),
+                              itemCount: transaction.length,
+                            );
+                            }
+                            
+                          }
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20.w,),
+                      child: Container(
+                        width: 375.w,
+                        height: 150.h,
+                        child: FutureBuilder<List<Transaction>>(
                           future: Network().getDataTransactionBatal(),
                           builder: (context, snapshot) {
                             if(snapshot.connectionState == ConnectionState.waiting){
@@ -744,11 +823,11 @@ class _HomeScreenState extends State<HomeScreen> {
                               itemBuilder: ((context, index) {
                                 // final Jamu jamu = listJamu[index];
                                 return InkWell(
-                                  // onTap: (){
-                                  //   Navigator.push(context, MaterialPageRoute(builder: (context) {
-                                  //   return DetailScreen(jamu: jamu,);
-                                  //   },));
-                                  // },
+                                  onTap: (){
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) {
+                                    return NoButtonOrderScreen(products: transaction[index].product, quantity: int.parse(transaction[index].quantity));
+                                    },));
+                                  },
                                   child: Padding(
                                     padding: EdgeInsets.only(top: 17.h),
                                     child: Row(
@@ -804,23 +883,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
-    //body profile
-    // Center(
-    //   child: Center(
-    //     child: Builder(
-    //       builder: (context) {
-    //         return FlatButton(
-    //           onPressed: ()async{
-    //             SharedPreferences localStorage = await SharedPreferences.getInstance();
-    //             localStorage.setBool("isLogin", false);
-    //             Navigator.push(context, MaterialPageRoute(builder: (context) => Login(),));
-    //           },
-    //           child: Text("LogOut") 
-    //         );
-    //       }
-    //     ),
-    //   ),
-    // ),
     SafeArea(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -839,11 +901,15 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     SizedBox(height: 25.h,),
                     Center(
-                      child: 
-                      // user.profilePhotoUrl == null 
-                      // ? 
-                      Image.asset('assets/image_empty.png', width: 81.w,) 
-                      // : Image.network(user.profilePhotoUrl)
+                      child: CircleAvatar(
+                      radius: 47.0.w,
+                      backgroundImage:  user.profilePhotoPath == null 
+                      ? AssetImage('assets/image_empty.png',) 
+                      : NetworkImage("https://ws-tif.com/kel3"+user.profilePhotoUrl,) as ImageProvider   
+                    ),
+                      // user.profilePhotoPath == null 
+                      // ? Image.asset('assets/image_empty.png', width: 81.w,) 
+                      // : Image.network("https://ws-tif.com/kel3"+user.profilePhotoUrl, width: 81.w, height: 81.h, fit: BoxFit.cover,)
                       ),
                     SizedBox(height: 7.h,),
                     Center(

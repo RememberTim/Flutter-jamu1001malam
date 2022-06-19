@@ -10,20 +10,20 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../model/home/user.dart';
 
-class PayScreen extends StatefulWidget {
+class NoButtonOrderScreen extends StatefulWidget {
   final Products products;
 
   int quantity;
-  PayScreen({
+  NoButtonOrderScreen({
     required this.products,
     required this.quantity
   });
 
   @override
-  State<PayScreen> createState() => _PayScreenState();
+  State<NoButtonOrderScreen> createState() => _NoButtonOrderScreenState();
 }
 
-class _PayScreenState extends State<PayScreen> {
+class _NoButtonOrderScreenState extends State<NoButtonOrderScreen> {
   late Future<User> futureUser;
   int userid = 0;
 
@@ -274,24 +274,24 @@ class _PayScreenState extends State<PayScreen> {
                     ),
                   ),
                   
-                  SizedBox(height: 80.h,),
-                  Container(
-                      width: 334.w,
-                      height: 42.h,
-                      decoration: BoxDecoration(
-                        color: primaryColor,
-                        borderRadius: BorderRadius.circular(5)
-                      ),
-                      child: TextButton(
-                        onPressed: (){
-                          checkout();
-                        }, 
-                        child: Text(
-                          "Buat Pesanan",
-                          style: buttonPrimaryText,
-                        )
-                      ),
-                    ),
+                  // SizedBox(height: 80.h,),
+                  // Container(
+                  //     width: 334.w,
+                  //     height: 42.h,
+                  //     decoration: BoxDecoration(
+                  //       color: primaryColor,
+                  //       borderRadius: BorderRadius.circular(5)
+                  //     ),
+                  //     child: TextButton(
+                  //       onPressed: (){
+                  //         checkout();
+                  //       }, 
+                  //       child: Text(
+                  //         "Buat Pesanan",
+                  //         style: buttonPrimaryText,
+                  //       )
+                  //     ),
+                  //   ),
                 ],
               ),
             ),
@@ -309,7 +309,7 @@ class _PayScreenState extends State<PayScreen> {
       'quantity' : widget.quantity,
       'total' : totalHarga(),
       'total_keuntungan' : products.keuntungan,
-      'status' : 'PENDING'
+      'status' : 'CANCELLED'
   
     };
 

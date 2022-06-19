@@ -65,6 +65,26 @@ class Network{
     );
   }
 
+  pesananDiterima(data, apiURL) async{
+    SharedPreferences localStorage = await SharedPreferences.getInstance();
+    var token1 = localStorage.getString('token')!;
+    int long = token1.length;
+    int max = long - 1;
+    var subToken = token1.substring(1,max);
+    var full = _url + apiURL;
+    var url = Uri.parse(full);
+    Map<String, String> headers = {
+          'Content-type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ' + subToken
+        };
+    return await http.post(
+      url,
+      body: jsonEncode(data),
+      headers: headers
+    );
+  }
+
   Future<User> login({
     String? email,
     String? password,
@@ -188,7 +208,7 @@ class Network{
   }
 
   Future<List<Products>> getDataProductsSemuausia()async {
-    var apiURL = '/product?tipe=Anak-anak & Dewasa';
+    var apiURL = '/product';
     var full = _url + apiURL;
     var url = Uri.parse(full);
     try{
@@ -212,6 +232,34 @@ class Network{
     int max = long - 1;
     var subToken = token1.substring(1,max);
     var apiURL = '/transaction?status=PENDING';
+    var full = _url + apiURL;
+    var url = Uri.parse(full);
+    Map<String, String> headers = {
+          'Content-type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ' + subToken
+        };
+    try{
+      final response = await http.get(url, headers: headers);
+      if(response.statusCode == 200){
+        var json =jsonDecode(response.body);
+        final parsed = json['data']['data'].cast<Map<String, dynamic>>();
+        return parsed.map<Transaction>((json) =>Transaction.fromJson(json)).toList();
+      }else{
+        return[];
+      }
+    }catch(e){
+      return[];
+    }
+  }
+
+  Future<List<Transaction>> getDataTransactionDikirim()async {
+    SharedPreferences localStorage = await SharedPreferences.getInstance();
+    var token1 = localStorage.getString('token')!;
+    int long = token1.length;
+    int max = long - 1;
+    var subToken = token1.substring(1,max);
+    var apiURL = '/transaction?status=DELIVERED';
     var full = _url + apiURL;
     var url = Uri.parse(full);
     Map<String, String> headers = {

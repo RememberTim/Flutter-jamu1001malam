@@ -312,7 +312,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         SharedPreferences localStorage = await SharedPreferences.getInstance();
         localStorage.setString('token', json.encode(body['data']['access_token']));
         if(_imageFile != null){
-          final String _url = 'http://192.168.1.17/api/user/photo';
+          final String _url = 'https://ws-tif.com/kel3/api/user/photo';
           var uri = Uri.parse(_url);
           SharedPreferences localStorage = await SharedPreferences.getInstance();
           String token = jsonDecode(localStorage.getString('token')!);

@@ -1,10 +1,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.jamu1001malam">
+    package="com.rozi.jamu1001malam">
 
    <application
-        android:label="jamu1001malam"
+        android:label="JamuPedia"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@drawable/icon">
         <activity
             android:name=".MainActivity"
             android:exported="true"
