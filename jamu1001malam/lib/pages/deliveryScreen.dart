@@ -320,7 +320,7 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
       // print(json.encode(body['data']));
       pesananDiterima = true;
     }else{
-      print('gagal');
+      showSnackBar('Gagal');
     }
 
 
@@ -335,5 +335,15 @@ class _DeliveryScreenState extends State<DeliveryScreen> {
     }else{
       print('gagal');
     }
+  }
+
+  void showSnackBar(String text){
+    ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(text),
+          backgroundColor: primaryColor,
+          behavior: SnackBarBehavior.floating,
+        )
+      );
   }
 }

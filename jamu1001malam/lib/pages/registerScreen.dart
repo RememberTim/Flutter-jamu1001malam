@@ -340,9 +340,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
         }
        
     }else{
-      print(body['meta']['code']);
-      print("$nama + $email + $password + $alamat + $telp");
+      showSnackBar('Register Gagal');
     }     
+  }
+
+  void showSnackBar(String text){
+    ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(text),
+          backgroundColor: primaryColor,
+          behavior: SnackBarBehavior.floating,
+        )
+      );
   }
 
   // void _uploadPhoto() async{

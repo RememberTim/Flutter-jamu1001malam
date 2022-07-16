@@ -21,8 +21,6 @@ void main(){
 
 class MyApp extends StatelessWidget {
 
-  var home;
-
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(

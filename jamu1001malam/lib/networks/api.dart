@@ -18,10 +18,40 @@ class Network{
   auth(data, apiURL) async{
     var full = _url + apiURL;
     var fullUrl = Uri.parse(full);
+    // SharedPreferences localStorage = await SharedPreferences.getInstance();
+    // var token1 = localStorage.getString('token')!;
+    // int long = token1.length;
+    // int max = long - 1;
+    // var subToken = token1.substring(1,max);
+    // Map<String, String> headers = {
+    //       'Content-type': 'application/json',
+    //       'Accept': 'application/json',
+    //       'Authorization': 'Bearer ' + subToken
+        // };
     return await http.post(
       fullUrl,
       body: jsonEncode(data),
       headers: _setHeaders()
+    );
+  }
+
+  edit(data, apiURL) async{
+    var full = _url + apiURL;
+    var fullUrl = Uri.parse(full);
+    SharedPreferences localStorage = await SharedPreferences.getInstance();
+    var token1 = localStorage.getString('token')!;
+    int long = token1.length;
+    int max = long - 1;
+    var subToken = token1.substring(1,max);
+    Map<String, String> headers = {
+          'Content-type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ' + subToken
+        };
+    return await http.post(
+      fullUrl,
+      body: jsonEncode(data),
+      headers: headers
     );
   }
 
@@ -154,7 +184,7 @@ class Network{
   }
 
   Future<List<Products>> getDataProducts()async {
-    var apiURL = '/product';
+    var apiURL = '/product?stok=Tersedia';
     var full = _url + apiURL;
     var url = Uri.parse(full);
     try{
@@ -173,7 +203,7 @@ class Network{
   }
 
   Future<List<Products>> getDataProductsAnakanak()async {
-    var apiURL = '/product?tipe=Anak-anak';
+    var apiURL = '/product?tipe=Anak-anak&stok=Tersedia';
     var full = _url + apiURL;
     var url = Uri.parse(full);
     try{
@@ -190,7 +220,7 @@ class Network{
     }
   }
   Future<List<Products>> getDataProductsDewasa()async {
-    var apiURL = '/product?tipe=Dewasa';
+    var apiURL = '/product?tipe=Dewasa&stok=Tersedia';
     var full = _url + apiURL;
     var url = Uri.parse(full);
     try{
@@ -208,7 +238,7 @@ class Network{
   }
 
   Future<List<Products>> getDataProductsSemuausia()async {
-    var apiURL = '/product';
+    var apiURL = '/product?tipe=Anak-anak %26 Dewasa&stok=Tersedia';
     var full = _url + apiURL;
     var url = Uri.parse(full);
     try{
@@ -225,13 +255,41 @@ class Network{
     }
   }
 
-  Future<List<Transaction>> getDataTransactionBerlangsung()async {
+  Future<List<Transaction>> getDataTransactionWaiting()async {
     SharedPreferences localStorage = await SharedPreferences.getInstance();
     var token1 = localStorage.getString('token')!;
     int long = token1.length;
     int max = long - 1;
     var subToken = token1.substring(1,max);
     var apiURL = '/transaction?status=PENDING';
+    var full = _url + apiURL;
+    var url = Uri.parse(full);
+    Map<String, String> headers = {
+          'Content-type': 'application/json',
+          'Accept': 'application/json',
+          'Authorization': 'Bearer ' + subToken
+        };
+    try{
+      final response = await http.get(url, headers: headers);
+      if(response.statusCode == 200){
+        var json =jsonDecode(response.body);
+        final parsed = json['data']['data'].cast<Map<String, dynamic>>();
+        return parsed.map<Transaction>((json) =>Transaction.fromJson(json)).toList();
+      }else{
+        return[];
+      }
+    }catch(e){
+      return[];
+    }
+  }
+
+  Future<List<Transaction>> getDataTransactionOrder()async {
+    SharedPreferences localStorage = await SharedPreferences.getInstance();
+    var token1 = localStorage.getString('token')!;
+    int long = token1.length;
+    int max = long - 1;
+    var subToken = token1.substring(1,max);
+    var apiURL = '/transaction?status=ORDER';
     var full = _url + apiURL;
     var url = Uri.parse(full);
     Map<String, String> headers = {

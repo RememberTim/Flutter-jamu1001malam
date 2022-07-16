@@ -28,6 +28,11 @@ TextStyle subTitle = GoogleFonts.inter(
   color: textGrey
 );
 
+TextStyle textTab = GoogleFonts.inter(
+  fontSize: 13.sp,
+  color: textGrey
+);
+
 TextStyle hintText = GoogleFonts.inter(
   color: textGrey,
   fontSize: 13.sp

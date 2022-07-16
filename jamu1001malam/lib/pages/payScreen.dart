@@ -321,7 +321,10 @@ class _PayScreenState extends State<PayScreen> {
       int lt = url.length;
       int max = lt-1;
       String fullUrl = url.substring(1, max);
+      print(fullUrl);
       _launchWeb(fullUrl);
+    }else{
+      showSnackBar('Gagal Melakukan Pesanan');
     }
 
 
@@ -336,5 +339,15 @@ class _PayScreenState extends State<PayScreen> {
     }else{
       print('gagal');
     }
+  }
+
+  void showSnackBar(String text){
+    ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(text),
+          backgroundColor: primaryColor,
+          behavior: SnackBarBehavior.floating,
+        )
+      );
   }
 }

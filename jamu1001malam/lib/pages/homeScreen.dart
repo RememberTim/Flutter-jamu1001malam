@@ -11,6 +11,7 @@ import 'package:jamu1001malam/pages/cancelledScreen.dart';
 import 'package:jamu1001malam/pages/cartScreen.dart';
 import 'package:jamu1001malam/pages/deliveryScreen.dart';
 import 'package:jamu1001malam/pages/detailScreen.dart';
+import 'package:jamu1001malam/pages/editprofileScreen.dart';
 import 'package:jamu1001malam/pages/login.dart';
 import 'package:jamu1001malam/pages/payScreen.dart';
 import 'package:jamu1001malam/pages/registerScreen.dart';
@@ -47,7 +48,6 @@ class _HomeScreenState extends State<HomeScreen> {
   int _index = 0;
 
   final tabs = [
-    //body home
     SafeArea(
       child: DefaultTabController(
         length: 3,
@@ -526,7 +526,7 @@ class _HomeScreenState extends State<HomeScreen> {
     //body Berlangsung
     SafeArea(
         child: DefaultTabController(
-          length: 4,
+          length: 5,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -561,25 +561,31 @@ class _HomeScreenState extends State<HomeScreen> {
                   Tab(
                     child: Text(
                       'Waiting',
-                      style: subTitle,
+                      style: textTab,
+                    ),
+                  ),
+                  Tab(
+                    child: Text(
+                      'Order',
+                      style: textTab,
                     ),
                   ),
                   Tab(
                     child: Text(
                       'Dikirim',
-                      style: subTitle,
+                      style: textTab,
                     ),
                   ),
                   Tab(
                     child: Text(
                       'Selesai',
-                      style: subTitle,
+                      style: textTab,
                     ),
                   ), 
                   Tab(
                     child: Text(
                       'Batal',
-                      style: subTitle,
+                      style: textTab,
                     ),
                   )
                 ],
@@ -594,7 +600,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         width: 375.w,
                         height: 150.h,
                         child: FutureBuilder<List<Transaction>>(
-                          future: Network().getDataTransactionBerlangsung(),
+                          future: Network().getDataTransactionWaiting(),
                           builder: (context, snapshot) {
                             if(snapshot.connectionState == ConnectionState.waiting){
                               return Center(child: CircularProgressIndicator(),);
@@ -657,6 +663,77 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                       ),
                     ),
+
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20.w,),
+                      child: Container(
+                        width: 375.w,
+                        height: 150.h,
+                        child: FutureBuilder<List<Transaction>>(
+                          future: Network().getDataTransactionOrder(),
+                          builder: (context, snapshot) {
+                            if(snapshot.connectionState == ConnectionState.waiting){
+                              return Center(child: CircularProgressIndicator(),);
+                            }else{
+                              List<Transaction> transaction = snapshot.data!;
+                            return ListView.builder(
+                              scrollDirection: Axis.vertical,
+                              itemBuilder: ((context, index) {
+                                // final Jamu jamu = listJamu[index];
+                                return InkWell(
+                                  onTap: (){
+                                    Navigator.push(context, MaterialPageRoute(builder: (context) {
+                                    return WaitingScreen(transaction : transaction[index], quantity: int.parse(transaction[index].quantity));
+                                    },));
+                                  },
+                                  child: Padding(
+                                    padding: EdgeInsets.only(top: 17.h),
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          width: 71.w,
+                                          height: 67.h,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(5.w),
+                                            image: DecorationImage(
+                                              image: NetworkImage(transaction[index].product.picturePath),
+                                              fit: BoxFit.cover,
+                                            ),  
+                                          ),
+                                        ),
+                                        SizedBox(width: 19.w,),
+                                        Expanded(
+                                          flex: 1,
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                transaction[index].product.nama,
+                                                style: sb14,
+                                              ),
+                                              SizedBox(height: 3.h,),
+                                              Text(
+                                                '${transaction[index].quantity} items ' + FormatRupiah.convertToIdr(int.parse(transaction[index].total)),
+                                                style: hintText,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        SizedBox(height: 17.h)
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              }),
+                              itemCount: transaction.length,
+                            );
+                            }
+                            
+                          }
+                        ),
+                      ),
+                    ),
+
                     //Body anak anak
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 20.w,),
@@ -944,25 +1021,32 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: EdgeInsets.symmetric(horizontal: 26.w),
             child: Column(
               children: [
-                GestureDetector(
-                  child: Row(
-                    children: [
-                      Expanded(
-                        flex: 6,
-                        child: Text(
-                          'Edit Profile',
-                          style: price,
-                        ),
+                Builder(
+                  builder: (context) {
+                    return GestureDetector(
+                      onTap: (){
+                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => EditProfileScreen(),));
+                      },
+                      child: Row(
+                        children: [
+                          Expanded(
+                            flex: 6,
+                            child: Text(
+                              'Edit Profile',
+                              style: price,
+                            ),
+                          ),
+                          Expanded(
+                            flex: 1,
+                            child: Icon(
+                              Icons.arrow_forward_ios,
+                              size: 14.w,
+                            ),
+                          )
+                        ],
                       ),
-                      Expanded(
-                        flex: 1,
-                        child: Icon(
-                          Icons.arrow_forward_ios,
-                          size: 14.w,
-                        ),
-                      )
-                    ],
-                  ),
+                    );
+                  }
                 ),
                 SizedBox(height: 10.h,),
                 Builder(

@@ -20,7 +20,7 @@ class _LoginState extends State<Login> {
   bool _isLoading = false;
   final _formKey1 = GlobalKey<FormState>();
   final _formKey2 = GlobalKey<FormState>();
-  var email, password;
+  String? email, password;
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   Future<void> Checklogin() async{
@@ -248,29 +248,45 @@ class _LoginState extends State<Login> {
     email = _email.text.toString();
     password = _password.text.toString();
 
-    var data = {
+    if(email!.isNotEmpty && password!.isNotEmpty){
+        var data = {
       'email' : email,
       'password' : password
-    };
+      };
 
-    var res = await Network().auth(data, '/login');
-    var body = json.decode(res.body);
-    if(body['meta']['code'] == 200){
-        User.fromJson(body['data']['user']);
-        SharedPreferences localStorage = await SharedPreferences.getInstance();
-        await localStorage.setString('token', jsonEncode(body['data']['access_token']));
-        print(json.encode(body['data']['access_token']));
-        localStorage.setBool('isLogin', true);
-        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen(),));
+      var res = await Network().auth(data, '/login');
+      var body = json.decode(res.body);
+      if(body['meta']['code'] == 200){
+          User.fromJson(body['data']['user']);
+          SharedPreferences localStorage = await SharedPreferences.getInstance();
+          await localStorage.setString('token', jsonEncode(body['data']['access_token']));
+          print(json.encode(body['data']['access_token']));
+          localStorage.setBool('isLogin', true);
+          // showSnackBar('Login Berhasil');
+          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomeScreen(),));
+      }else{
+       showSnackBar('Login Gagal');
+      }
     }else{
-      print(body['meta']['code']);
-      print("$email $password");
+      showSnackBar('Email & Password tidak boleh kosong');
     }
+
+    
 
     setState(() {
       _isLoading = false;
     });
 
+  }
+
+  void showSnackBar(String text){
+    ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(text),
+          backgroundColor: primaryColor,
+          behavior: SnackBarBehavior.floating,
+        )
+      );
   }
 }
 
